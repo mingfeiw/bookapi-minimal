@@ -10,13 +10,10 @@ using Azure.Security.KeyVault.Secrets;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Set your Key Vault URL
 string keyVaultUrl = "https://kv-bookapi.vault.azure.net/";
 
-// Create a SecretClient using DefaultAzureCredential (works with managed identity in Azure)
 var secretClient = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
 
-// Fetch the connection string secret from Key Vault
 KeyVaultSecret secret = secretClient.GetSecret("DbConnectionString");
 string connectionString = secret.Value;
 

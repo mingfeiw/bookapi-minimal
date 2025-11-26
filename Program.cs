@@ -49,6 +49,12 @@ app.MapGroup("/api/v1/")
     .WithTags(" Book endpoints")
     .MapBookEndPoint();
 
-app.Run();
+// Auto-migrate database on startup
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<ApplicationContext>();
+    context.Database.Migrate();
+}
 
+app.Run();
 public partial class Program { }

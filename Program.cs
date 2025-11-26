@@ -3,9 +3,25 @@ using bookapi_minimal.Endpoints;
 using bookapi_minimal.Services;
 using Microsoft.OpenApi.Models;
 using bookapi_minimal.Extensions;
+using Microsoft.EntityFrameworkCore;
+using bookapi_minimal.AppContext;
+using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Set your Key Vault URL
+string keyVaultUrl = "https://kv-bookapi.vault.azure.net/";
+
+// Create a SecretClient using DefaultAzureCredential (works with managed identity in Azure)
+var secretClient = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
+
+// Fetch the connection string secret from Key Vault
+KeyVaultSecret secret = secretClient.GetSecret("DbConnectionString");
+string connectionString = secret.Value;
+
+builder.Services.AddDbContext<ApplicationContext>(options =>
+    options.UseSqlServer(connectionString));
 
 builder.AddApplicationServices();
 builder.Services.AddEndpointsApiExplorer();
@@ -14,15 +30,12 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo
     {
         Title = "Mimal API",
-        Version = "v1",
-        Description = "Showing how you can build minimal " +
-                      "api with .net"
+        Version = "v1"
     });
 
     var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
-
 });
 
 var app = builder.Build();
@@ -34,7 +47,6 @@ if (app.Environment.IsDevelopment())
 }
 
 //app.UseHttpsRedirection();
-
 
 app.MapGroup("/api/v1/")
     .WithTags(" Book endpoints")

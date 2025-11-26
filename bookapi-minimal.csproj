@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
@@ -6,9 +6,12 @@
     <ImplicitUsings>enable</ImplicitUsings>
      <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <RootNamespace>bookapi_minimal</RootNamespace>
+    <UserSecretsId>1128b658-3a17-4700-ae90-d455756959bd</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
+   <PackageReference Include="Azure.Identity" Version="1.17.1" />
+   <PackageReference Include="Azure.Security.KeyVault.Secrets" Version="4.8.0" />
    <PackageReference Include="EntityFramework" Version="6.5.1" />
    <PackageReference Include="FluentAssertions" Version="8.8.0" />
    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="12.1.0" />
